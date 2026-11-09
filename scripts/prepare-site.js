@@ -5,11 +5,12 @@ const navQuote = '<li><a href="#contact" class="nav-cta">Get a Quote</a></li>'
 if (!source.includes(navQuote)) throw new Error('Could not find the original Get a Quote navigation item in website.txt')
 
 const editorCss = `
-  /* Local-only demo editor (matches the former browser editor behavior). */
-  .editor-nav-item { list-style: none; }
+  /* Browser-only demo editor; the hidden attribute must win over the backdrop display rule. */
+  .editor-dialog-backdrop[hidden] { display: none !important; }
+  .editor-nav-item { list-style: none; flex: 0 0 auto; }
   .editor-nav-button {
     display: block; border: 1px solid rgba(59,130,246,.35); border-radius: 10px;
-    padding: 9px 14px; background: #eff6ff; color: #1d4ed8; cursor: pointer;
+    padding: 10px 14px; background: #eff6ff; color: #1d4ed8; cursor: pointer;
     font: inherit; font-size: .86rem; font-weight: 700; white-space: nowrap;
     transition: transform .25s, box-shadow .25s, background .25s;
   }
@@ -31,13 +32,13 @@ const editorCss = `
   body.editor-mode [data-local-editable="true"] { outline: 1px dashed rgba(59,130,246,.65); outline-offset: 3px; cursor: text; }
   body.editor-mode [data-local-editable="true"]:focus { outline: 2px solid #3b82f6; background-color: rgba(219,234,254,.22); }
   @media (max-width: 720px) {
-    .editor-nav-item { padding: 14px 0; }
+    .editor-nav-item { width: 100%; padding: 14px 0; border-bottom: 0 !important; }
     .editor-nav-button { width: 100%; }
     .editor-toolbar { right: 12px; left: 12px; bottom: 12px; }
   }
 `
 
-const navEditor = `<li class="editor-nav-item"><button class="editor-nav-button" id="openSiteEditor" type="button">Login to Edit Website</button></li>`
+const navEditor = '<li class="editor-nav-item"><button class="editor-nav-button" id="openSiteEditor" type="button">Login to Edit Website</button></li>'
 const modalAndToolbar = `
 <div class="editor-dialog-backdrop" id="siteEditorDialog" hidden>
   <form class="editor-dialog" id="siteEditorLogin">
@@ -58,38 +59,44 @@ const modalAndToolbar = `
 </div>
 <script>
 (() => {
-  const STORAGE_KEY = 'mfd-original-site-edit-v1';
+  const storageKey = 'mfd-original-site-edit-v1';
   const dialog = document.getElementById('siteEditorDialog');
   const form = document.getElementById('siteEditorLogin');
   const toolbar = document.getElementById('siteEditorToolbar');
-  const editableSelector = 'section h1, section h2, section h3, section h4, section p, section li, section blockquote, section figcaption, section .slide-badge, section .slide-stat .lbl, section .slide-stat .val, section .service-icon, section .tech-icon, section .skill-tag, section .stat-num, section .stat-label, section .about-image-badge, section .about-image-overlay';
-  let editorActive = false;
+  const editorButton = document.getElementById('openSiteEditor');
+  const navLinks = document.getElementById('navLinks');
+  const menuToggle = document.getElementById('menuToggle');
+  const selector = 'section h1, section h2, section h3, section h4, section p, section li, section blockquote, section figcaption, section .slide-badge, section .slide-stat .lbl, section .slide-stat .val, section .service-icon, section .tech-icon, section .skill-tag, section .stat-num, section .stat-label, section .about-image-badge, section .about-image-overlay';
+  const getEditable = () => [...document.querySelectorAll(selector)].filter((el) => !el.closest('a,button,input,textarea,select,script,style'));
 
-  function editableElements() {
-    return [...document.querySelectorAll(editableSelector)].filter((el) => !el.closest('a,button,input,textarea,select,script,style'));
-  }
-  function restoreSavedContent() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-      if (!Array.isArray(saved)) return;
-      editableElements().forEach((el, index) => {
-        if (typeof saved[index] === 'string') el.innerHTML = saved[index];
-      });
-    } catch (error) { console.warn('Could not restore local website edits.', error); }
+  function closeMobileMenu() {
+    navLinks?.classList.remove('open');
+    if (menuToggle) menuToggle.textContent = '☰';
   }
   function setEditorMode(enabled) {
-    editorActive = enabled;
     document.body.classList.toggle('editor-mode', enabled);
-    editableElements().forEach((el) => {
+    getEditable().forEach((el) => {
       el.dataset.localEditable = enabled ? 'true' : 'false';
       el.contentEditable = enabled ? 'true' : 'false';
       el.spellcheck = enabled;
     });
     toolbar.classList.toggle('is-visible', enabled);
   }
+  function restoreSavedContent() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+      if (Array.isArray(saved)) getEditable().forEach((el, index) => {
+        if (typeof saved[index] === 'string') el.innerHTML = saved[index];
+      });
+    } catch (error) { console.warn('Could not restore local website edits.', error); }
+  }
 
   restoreSavedContent();
-  document.getElementById('openSiteEditor').addEventListener('click', () => { dialog.hidden = false; });
+  editorButton?.addEventListener('click', () => {
+    closeMobileMenu();
+    dialog.hidden = false;
+    form.elements.username.focus();
+  });
   document.getElementById('cancelSiteEditor').addEventListener('click', () => { dialog.hidden = true; });
   dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.hidden = true; });
   form.addEventListener('submit', (event) => {
@@ -100,12 +107,12 @@ const modalAndToolbar = `
   });
   document.getElementById('saveSiteEdits').addEventListener('click', () => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(editableElements().map((el) => el.innerHTML)));
-      alert('Changes saved in this browser. They are not published to the live site for other visitors.');
-    } catch (error) { alert('Could not save edits in this browser. Please export a backup.'); }
+      localStorage.setItem(storageKey, JSON.stringify(getEditable().map((el) => el.innerHTML)));
+      alert('Changes saved in this browser only; they are not published for other visitors.');
+    } catch { alert('Could not save edits in this browser. Please export a backup.'); }
   });
   document.getElementById('exportSiteEdits').addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify(editableElements().map((el) => el.innerHTML), null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(getEditable().map((el) => el.innerHTML), null, 2)], { type: 'application/json' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'mfd-site-edits.json';
@@ -115,7 +122,7 @@ const modalAndToolbar = `
   document.getElementById('exitSiteEditor').addEventListener('click', () => setEditorMode(false));
   document.getElementById('resetSiteEdits').addEventListener('click', () => {
     if (confirm('Clear this browser’s saved edits and reload the original website?')) {
-      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(storageKey);
       location.reload();
     }
   });
