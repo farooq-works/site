@@ -36,6 +36,21 @@ jobs:
       - name: Prepare original website with navbar editor
         run: node scripts/prepare-site.js
 
+      - name: Set contact form recipient
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises'
+          const path = 'dist/index.html'
+          let html = await readFile(path, 'utf8')
+          const oldRecipient = 'const RECIPIENT_EMAIL = "mohammadfarooq127@gmail.com";'
+          const newRecipient = 'const RECIPIENT_EMAIL = "Mohammadfarooq.works@gmail.com";'
+          if (!html.includes(oldRecipient) && !html.includes(newRecipient)) {
+            throw new Error('Could not locate the contact form recipient constant in the generated page.')
+          }
+          html = html.replace(oldRecipient, newRecipient)
+          await writeFile(path, html)
+          NODE
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
