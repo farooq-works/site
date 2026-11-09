@@ -1,0 +1,206 @@
+/* Visual parity pass based on the original design in /website.txt. */
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-padding-top: 5.5rem;
+}
+
+body {
+  background: #fff;
+  color: #0a0f1e;
+}
+
+/* Theme bands matching the original site */
+.site-section#about {
+  background: linear-gradient(180deg, #fff 0%, #f5f3ff 50%, #fff 100%);
+}
+.site-section#services {
+  background: linear-gradient(180deg, #f8fafc 0%, #eef4ff 50%, #f8fafc 100%);
+}
+.site-section#more-details {
+  background: linear-gradient(180deg, #fff 0%, #f0f9ff 100%);
+}
+.site-section#why-us {
+  background: linear-gradient(180deg, #f8fafc 0%, #ede9fe 100%);
+}
+.site-section#tech-stack {
+  background: linear-gradient(180deg, #fff 0%, #eef4ff 100%);
+}
+.site-section#process {
+  background: linear-gradient(180deg, #f8fafc 0%, #fef3c7 100%);
+}
+.site-section#portfolio {
+  background: linear-gradient(180deg, #fff 0%, #eff6ff 100%);
+}
+.site-section#pricing {
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+}
+.site-section#faq {
+  background: linear-gradient(180deg, #f8fafc 0%, #e0f2fe 100%);
+}
+.site-section#global-presence,
+.site-section#testimonials {
+  background: linear-gradient(180deg, #fff 0%, #f1f5f9 100%);
+}
+.site-section#stats,
+.site-section#contact {
+  background: linear-gradient(135deg, #0a0f1e, #1e3a8a, #0a0f1e);
+  background-size: 200% 200%;
+  animation: reference-gradient-shift 14s ease infinite;
+}
+
+@keyframes reference-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.site-section:is(#about, #services, #more-details, #why-us, #tech-stack, #process, #portfolio, #pricing, #faq, #global-presence, #testimonials) {
+  color: #0a0f1e;
+}
+.site-section:is(#about, #services, #more-details, #why-us, #tech-stack, #process, #portfolio, #pricing, #faq, #global-presence, #testimonials) .section-title,
+.site-section:is(#about, #services, #more-details, #why-us, #tech-stack, #process, #portfolio, #pricing, #faq, #global-presence, #testimonials) h3,
+.site-section:is(#about, #services, #more-details, #why-us, #tech-stack, #process, #portfolio, #pricing, #faq, #global-presence, #testimonials) h4 {
+  color: #0a0f1e;
+}
+.site-section:is(#about, #services, #more-details, #why-us, #tech-stack, #process, #portfolio, #pricing, #faq, #global-presence, #testimonials) .section-description,
+.site-section:is(#about, #services, #more-details, #why-us, #tech-stack, #process, #portfolio, #pricing, #faq, #global-presence, #testimonials) > div > div > p,
+.site-section:is(#about, #services, #more-details, #why-us, #tech-stack, #process, #portfolio, #pricing, #faq, #global-presence, #testimonials) article p {
+  color: #64748b;
+}
+
+.site-section:is(#services, #why-us, #tech-stack, #process) .content-card,
+.site-section#portfolio article,
+.site-section#global-presence article,
+.site-section#testimonials figure,
+.site-section#pricing article {
+  border-color: #e8edf5;
+  background-color: #fff;
+  color: #0a0f1e;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .08);
+  transition: transform .4s cubic-bezier(.16, 1, .3, 1), box-shadow .4s ease, border-color .3s ease;
+}
+.site-section:is(#services, #why-us, #tech-stack, #process) .content-card:hover,
+.site-section#portfolio article:hover,
+.site-section#global-presence article:hover,
+.site-section#testimonials figure:hover,
+.site-section#pricing article:hover {
+  transform: translateY(-8px);
+  border-color: rgba(59, 130, 246, .3);
+  box-shadow: 0 24px 48px rgba(59, 130, 246, .16);
+}
+.site-section:is(#services, #why-us, #tech-stack, #process) .content-card h3,
+.site-section#portfolio article h3,
+.site-section#global-presence article h3,
+.site-section#testimonials figure blockquote,
+.site-section#pricing article h3 {
+  color: #0a0f1e;
+}
+.site-section:is(#services, #why-us, #tech-stack, #process) .content-card p,
+.site-section#portfolio article p,
+.site-section#global-presence article p,
+.site-section#testimonials figure figcaption,
+.site-section#pricing article li {
+  color: #64748b;
+}
+
+.site-section#about > div:first-of-type > div:first-child {
+  width: 100%;
+  max-width: 440px;
+}
+.site-section#about img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  transition: transform .8s ease;
+}
+.site-section#about img:hover {
+  transform: scale(1.045);
+}
+.site-section#about > div:first-of-type > div:first-child > div.relative {
+  box-shadow: 0 30px 60px rgba(15, 23, 42, .18);
+}
+.site-section#about .text-slate-400,
+.site-section#about .text-slate-300 {
+  color: #64748b;
+}
+.site-section#about .text-white {
+  color: #fff;
+}
+
+.site-section#faq article {
+  margin-bottom: 16px;
+  padding: 0 22px;
+  overflow: hidden;
+  border: 1px solid #e8edf5;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, .05);
+  transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+}
+.site-section#faq article:hover {
+  border-color: rgba(59, 130, 246, .25);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, .1);
+}
+.site-section#faq article:has(button[aria-expanded="true"]) {
+  border-color: #3b82f6;
+  box-shadow: 0 12px 32px rgba(59, 130, 246, .15);
+}
+.site-section#faq article > button {
+  min-height: 76px;
+  color: #0a0f1e;
+  font-size: 1rem;
+  transition: color .25s ease;
+}
+.site-section#faq article:has(button[aria-expanded="true"]) > button {
+  color: #1d4ed8;
+}
+.site-section#faq article > button span {
+  color: #fff;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  transition: transform .35s cubic-bezier(.16, 1, .3, 1);
+}
+.site-section#faq article:has(button[aria-expanded="true"]) > button span {
+  transform: rotate(135deg);
+}
+.site-section#faq article > p {
+  padding: 0 0 22px;
+  color: #64748b;
+  animation: faq-answer-in .35s ease both;
+}
+.site-section#faq button:focus-visible,
+.site-header a:focus-visible,
+.site-header button:focus-visible {
+  outline: 3px solid #06b6d4;
+  outline-offset: 3px;
+}
+@keyframes faq-answer-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, .88);
+  backdrop-filter: blur(20px) saturate(180%);
+}
+.site-header.scrolled {
+  background: rgba(255, 255, 255, .97);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, .08);
+}
+
+@media (max-width: 639px) {
+  .site-section#about > div:first-of-type > div:first-child { max-width: 360px; }
+  .site-section#faq article { padding-right: 16px; padding-left: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-section#stats,
+  .site-section#contact { animation: none; }
+  .site-section#faq article > p { animation: none; }
+}
