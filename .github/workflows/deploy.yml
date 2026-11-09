@@ -21,13 +21,20 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Prepare static site from original website.txt
-        run: |
-          mkdir -p dist/images
-          cp website.txt dist/index.html
-          cp src/assets/images/MF.jpg dist/images/MF.jpg
-          # keep the original portrait reference path working exactly as authored
-          cp src/assets/images/MF.jpg dist/MF.jpg
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Vue app
+        run: npm run build
+
+      - name: Prepare original website with navbar editor
+        run: node scripts/prepare-site.js
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
